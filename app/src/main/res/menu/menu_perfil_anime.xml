@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools" tools:context=".controllers.MainActivity">
+
+    <item android:id="@+id/infoWeb"
+        android:icon="@drawable/info"
+        app:showAsAction="ifRoom"
+        android:title="Más información"/>
+
+    <item android:id="@+id/email"
+        android:icon="@drawable/email"
+        app:showAsAction="ifRoom"
+        android:title="Enviar correo"/>
+
+    <item android:id="@+id/compartir"
+        android:icon="@drawable/share"
+        app:showAsAction="always"
+        android:title=""/>
+
+</menu>

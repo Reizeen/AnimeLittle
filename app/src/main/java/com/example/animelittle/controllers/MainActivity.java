@@ -27,6 +27,8 @@ import com.example.animelittle.model.AnimeConstantes;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final int SEGUNDOS_ESPERA = 10;
+
     private AdapterAnimes adapterAnimes;
     private RecyclerView recyclerAnimes;
 
@@ -41,12 +43,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerAnimes = findViewById(R.id.idRecyclerView);
         recyclerAnimes.setLayoutManager(new LinearLayoutManager(this));
 
-        adapterAnimes = new AdapterAnimes(this, selectAnimes());
-        if (adapterAnimes.getItemCount() != 0){
-            iniciarAsyncTask();
-            recyclerAnimes.setAdapter(adapterAnimes);
-            abrePerfilAnime(adapterAnimes);
-        }
+        iniciarAsyncTask();
     }
 
     private Cursor selectAnimes() {
@@ -76,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Abre la actividad del perfil de un item del RecyclerView
      */
-    public void abrePerfilAnime(final AdapterAnimes adapterAnimes) {
+    public void abrePerfilAnime() {
         adapterAnimes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     /** ==================================================================
      *  ==================== FUNCIONALIDAD AsyncTask =====================
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
      * Utilizado para ejecutar operaciones en segundo plano,
      * en este caso para visualizar los datos del RecyclerView
      */
-    private class MiAsyncTask extends AsyncTask<Void, Integer, Boolean> {
+    private class MiAsyncTask extends AsyncTask<Void, Integer, Boolean>{
 
         /**
          * Método llamado antes de iniciar el procesamiento en segundo plano.
@@ -147,14 +146,16 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected Boolean doInBackground(Void... voids) {
-            for (int i = 0; i < adapterAnimes.getItemCount(); i++){
+            for (int i = 0; i < SEGUNDOS_ESPERA; i++){
                 try {
+                    if(isCancelled())
+                        return false;
                     Thread.sleep(1000);
                 } catch(InterruptedException e) {}
 
-                if(isCancelled())
-                    break;
             }
+            adapterAnimes = new AdapterAnimes(getApplicationContext(), selectAnimes());
+            abrePerfilAnime();
 
             return true;
         }
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean result) {
             if(result) {
                 pd.dismiss();
+                recyclerAnimes.setAdapter(adapterAnimes);
                 Toast.makeText(MainActivity.this, "Datos cargados!", Toast.LENGTH_SHORT).show();
             }
         }
